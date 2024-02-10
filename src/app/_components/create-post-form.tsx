@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { createPostInput } from "@/common/validation/post";
 import { api } from "@/trpc/react";

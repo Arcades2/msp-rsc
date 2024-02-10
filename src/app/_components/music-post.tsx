@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+"use client";
+
+import React from "react";
 import dynamic from "next/dynamic";
 import { type RouterOutputs } from "@/trpc/shared";
 import { usePlayersActions, usePlayerState } from "@/stores/players";
@@ -14,7 +16,21 @@ const ReactPlayer = dynamic(() => import("react-player/lazy"), {
 });
 
 type MusicPostProps = {
-  post: RouterOutputs["post"]["infiniteFollowedPosts"]["posts"][number];
+  post: {
+    id: string;
+    description: string;
+    url: string;
+    createdAt: Date;
+    user: React.ComponentProps<typeof Avatar>["user"];
+    likes: Array<{
+      user: {
+        name: string;
+        id: string;
+        image: string;
+      };
+      id: string;
+    }>;
+  };
 };
 
 export function MusicPost({ post }: MusicPostProps) {
@@ -22,7 +38,7 @@ export function MusicPost({ post }: MusicPostProps) {
   const playersActions = usePlayersActions();
   const router = useRouter();
 
-  useEffect(() => {
+  React.useEffect(() => {
     playersActions.addPlayer(post.id);
 
     return () => {
