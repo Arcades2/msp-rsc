@@ -1,7 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { createSSRHelper } from "@/server/helpers/ssHelpers";
 import { Hydrate, dehydrate } from "@tanstack/react-query";
-import { MainFeed } from "./_components/main-feed";
+import { MainFeed } from "@/app/_components/main-feed";
 
 export default async function Home() {
   noStore();
