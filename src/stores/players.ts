@@ -7,6 +7,10 @@ type PlayerState = {
 
 type PlayersState = {
   playersState: Record<string, PlayerState>;
+  currentlyPlaying: {
+    id: string;
+    playing: boolean;
+  } | null;
   actions: {
     addPlayer: (postId: string, playerState?: PlayerState) => void;
     removePlayer: (postId: string) => void;
@@ -17,6 +21,7 @@ type PlayersState = {
 
 const usePlayersStore = create<PlayersState>((set) => ({
   playersState: {},
+  currentlyPlaying: null,
   actions: {
     addPlayer: (postId, playerState = { playing: false }) =>
       set((state) => ({
@@ -46,6 +51,10 @@ const usePlayersStore = create<PlayersState>((set) => ({
             playing: false,
           },
         },
+        currentlyPlaying: {
+          id: postId,
+          playing: false,
+        },
       }));
     },
     playPlayer(postId) {
@@ -61,6 +70,10 @@ const usePlayersStore = create<PlayersState>((set) => ({
 
           return acc;
         }, {}),
+        currentlyPlaying: {
+          id: postId,
+          playing: true,
+        },
       }));
     },
   },
@@ -70,5 +83,7 @@ export const usePlayersState = () =>
   usePlayersStore((state) => state.playersState);
 export const usePlayerState = (id: string) =>
   usePlayersStore((state) => state.playersState[id] ?? { playing: false });
+export const useCurrentlyPlaying = () =>
+  usePlayersStore((state) => state.currentlyPlaying);
 export const usePlayersActions = () =>
   usePlayersStore((state) => state.actions);
