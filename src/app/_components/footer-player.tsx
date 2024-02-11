@@ -13,21 +13,21 @@ export function FooterPlayer() {
   return (
     <div className="fixed bottom-0 left-0 right-0 border-t-[1px] border-t-white bg-background/95 py-4 text-center">
       {currentlyPlaying.playing ? (
-        <PlayerButton onClick={() => actions.pausePlayer(currentlyPlaying.id)}>
+        <PlayButton onClick={() => actions.pausePlayer(currentlyPlaying.id)}>
           <PiPause />
-        </PlayerButton>
+        </PlayButton>
       ) : (
-        <PlayerButton onClick={() => actions.playPlayer(currentlyPlaying.id)}>
+        <PlayButton onClick={() => actions.playPlayer(currentlyPlaying.id)}>
           <PiPlay />
-        </PlayerButton>
+        </PlayButton>
       )}
     </div>
   );
 }
 
-type PlayerButtonProps = React.ComponentProps<typeof Button>;
+type PlayButtonProps = React.ComponentProps<typeof Button>;
 
-function PlayerButton(props: PlayerButtonProps) {
+function PlayButton(props: PlayButtonProps) {
   return (
     <Button rounded className="aspect-square p-2" {...props}>
       {props.children}
