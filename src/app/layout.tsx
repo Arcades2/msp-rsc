@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Providers } from "@/app/_components/providers";
 import { getServerAuthSession } from "@/server/auth";
 
@@ -28,17 +27,18 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
-        <Providers session={session}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="mx-auto min-h-screen max-w-[700px] border-x border-neutral-400 border-opacity-25">
-              <TRPCReactProvider>{children}</TRPCReactProvider>
-            </div>
-          </ThemeProvider>
+        <Providers
+          Session={{ session }}
+          Theme={{
+            attribute: "class",
+            defaultTheme: "dark",
+            enableSystem: true,
+            disableTransitionOnChange: true,
+          }}
+        >
+          <div className="mx-auto min-h-screen max-w-[700px] border-x border-neutral-400 border-opacity-25">
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+          </div>
         </Providers>
       </body>
     </html>

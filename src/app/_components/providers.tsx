@@ -2,12 +2,18 @@
 
 import { SessionProvider } from "next-auth/react";
 import { type ComponentProps, type ReactNode } from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 export type ProvidersProps = {
   children: ReactNode;
-  session: ComponentProps<typeof SessionProvider>["session"];
+  Session: Omit<ComponentProps<typeof SessionProvider>, "children">;
+  Theme: Omit<ComponentProps<typeof NextThemesProvider>, "children">;
 };
 
-export function Providers({ children, session }: ProvidersProps) {
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+export function Providers({ children, Session, Theme }: ProvidersProps) {
+  return (
+    <SessionProvider {...Session}>
+      <NextThemesProvider {...Theme}>{children}</NextThemesProvider>
+    </SessionProvider>
+  );
 }

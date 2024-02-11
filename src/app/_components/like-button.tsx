@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/_components/ui/button";
 import { PiHeartStraightBold, PiHeartStraightFill } from "react-icons/pi";
 import { api } from "@/trpc/react";
 import { useSession } from "next-auth/react";

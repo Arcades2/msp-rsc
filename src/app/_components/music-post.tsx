@@ -2,12 +2,11 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import { type RouterOutputs } from "@/trpc/shared";
 import { usePlayersActions, usePlayerState } from "@/stores/players";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar } from "@/app/_components/ui/avatar";
 import { LocalDate } from "@/app/_components/local-date";
 import { LikeButton } from "@/app/_components/like-button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/app/_components/ui/skeleton";
 import { useRouter } from "next/navigation";
 
 const ReactPlayer = dynamic(() => import("react-player/lazy"), {

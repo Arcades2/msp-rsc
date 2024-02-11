@@ -13,10 +13,10 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+} from "@/app/_components/ui/form";
+import { Input } from "@/app/_components/ui/input";
+import { Textarea } from "@/app/_components/ui/textarea";
+import { Button } from "@/app/_components/ui/button";
 
 export function CreatePostForm() {
   const form = useForm<z.infer<typeof createPostInput>>({

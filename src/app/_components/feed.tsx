@@ -5,7 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { type api } from "@/trpc/react";
 import { CreatePostForm } from "@/app/_components/create-post-form";
 import { MusicPost } from "@/app/_components/music-post";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/_components/ui/button";
 
 export type FeedProps = {
   query: ReturnType<typeof api.post.infiniteFollowedPosts.useInfiniteQuery>;
