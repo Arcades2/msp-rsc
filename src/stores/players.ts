@@ -16,10 +16,11 @@ type PlayersState = {
     removePlayer: (postId: string) => void;
     pausePlayer: (postId: string) => void;
     playPlayer: (postId: string) => void;
+    currentlyPlayingEnded: (postId: string) => void;
   };
 };
 
-const usePlayersStore = create<PlayersState>((set) => ({
+const usePlayersStore = create<PlayersState>()((set) => ({
   playersState: {},
   currentlyPlaying: null,
   actions: {
@@ -75,6 +76,23 @@ const usePlayersStore = create<PlayersState>((set) => ({
           playing: true,
         },
       }));
+    },
+    currentlyPlayingEnded(postId) {
+      set((state) => {
+        if (!state.currentlyPlaying) return state;
+        return {
+          playersState: {
+            ...state.playersState,
+            [postId]: {
+              playing: false,
+            },
+          },
+          currentlyPlaying: {
+            id: state.currentlyPlaying.id,
+            playing: false,
+          },
+        };
+      });
     },
   },
 }));

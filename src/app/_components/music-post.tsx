@@ -80,6 +80,9 @@ export function MusicPost({ post }: MusicPostProps) {
           onPlay={() => {
             playersActions.playPlayer(post.id);
           }}
+          onEnded={() => {
+            playersActions.currentlyPlayingEnded(post.id);
+          }}
           onPause={() => {
             playersActions.pausePlayer(post.id);
           }}
