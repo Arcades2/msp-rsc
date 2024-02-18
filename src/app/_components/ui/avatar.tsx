@@ -8,8 +8,8 @@ const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> & {
     user: {
-      image?: string | null;
-      name?: string;
+      image: string | null;
+      name: string;
       id: string;
     };
   }

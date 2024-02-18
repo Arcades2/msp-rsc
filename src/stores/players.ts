@@ -1,91 +1,58 @@
 import { create } from "zustand";
 
-type PlayerState = {
-  playing: boolean;
-};
-
 type PlayersState = {
-  playersState: Map<string, PlayerState>;
   currentlyPlaying: {
     id: string;
-    playing: boolean;
+    paused: boolean;
   } | null;
   actions: {
-    addPlayer: (postId: string, playerState?: PlayerState) => void;
-    removePlayer: (postId: string) => void;
+    setCurrentlyPlaying: (postId: string) => void;
     pausePlayer: (postId: string) => void;
-    playPlayer: (postId: string) => void;
+    resumePlayer: (postId: string) => void;
   };
 };
 
 const usePlayersStore = create<PlayersState>()((set, get) => ({
-  playersState: new Map<string, PlayerState>(),
   currentlyPlaying: null,
   actions: {
-    addPlayer: (postId, playerState = { playing: false }) => {
+    setCurrentlyPlaying(postId: string) {
+      set({
+        currentlyPlaying: {
+          id: postId,
+          paused: false,
+        },
+      });
+    },
+    resumePlayer(postId: string) {
+      if (postId !== get().currentlyPlaying?.id) return;
+
       set((state) => ({
-        playersState: structuredClone(state.playersState).set(
-          postId,
-          playerState,
-        ),
+        currentlyPlaying: {
+          id: state.currentlyPlaying!.id,
+          paused: false,
+        },
       }));
     },
-    removePlayer: (postId) => {
-      const newPlayerState = structuredClone(get().playersState);
-      newPlayerState.delete(postId);
+    pausePlayer(postId: string) {
+      if (postId !== get().currentlyPlaying?.id) return;
 
-      set({
-        playersState: newPlayerState,
-      });
-    },
-    pausePlayer(postId) {
-      const newPlayersState = structuredClone(get().playersState);
-
-      const post = newPlayersState.get(postId);
-
-      if (!post) return;
-
-      post.playing = false;
-
-      set({
-        playersState: newPlayersState,
+      set((state) => ({
         currentlyPlaying: {
-          id: postId,
-          playing: false,
+          id: state.currentlyPlaying!.id,
+          paused: true,
         },
-      });
-    },
-    playPlayer(postId) {
-      const newPlayersState = structuredClone(get().playersState);
-
-      newPlayersState.forEach((_, key, map) => {
-        if (key === postId) {
-          map.set(key, {
-            playing: true,
-          });
-        } else {
-          map.set(key, {
-            playing: false,
-          });
-        }
-      });
-
-      set({
-        playersState: newPlayersState,
-        currentlyPlaying: {
-          id: postId,
-          playing: true,
-        },
-      });
+      }));
     },
   },
 }));
 
-export const usePlayersState = () =>
-  usePlayersStore((state) => state.playersState);
-export const usePlayerState = (id: string) =>
-  usePlayersStore((state) => state.playersState.get(id) ?? { playing: false });
 export const useCurrentlyPlaying = () =>
   usePlayersStore((state) => state.currentlyPlaying);
+
+export const useIsCurrentlyPlaying = (postId: string) => {
+  const currentlyPlaying = useCurrentlyPlaying();
+  return postId === currentlyPlaying?.id && !currentlyPlaying.paused;
+};
+
 export const usePlayersActions = () =>
   usePlayersStore((state) => state.actions);

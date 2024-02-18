@@ -12,13 +12,13 @@ export function FooterPlayer() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 border-t-[1px] border-t-white bg-background/95 py-4 text-center">
-      {currentlyPlaying.playing ? (
-        <PlayButton onClick={() => actions.pausePlayer(currentlyPlaying.id)}>
-          <PiPause />
+      {currentlyPlaying.paused ? (
+        <PlayButton onClick={() => actions.resumePlayer(currentlyPlaying.id)}>
+          <PiPlay />
         </PlayButton>
       ) : (
-        <PlayButton onClick={() => actions.playPlayer(currentlyPlaying.id)}>
-          <PiPlay />
+        <PlayButton onClick={() => actions.pausePlayer(currentlyPlaying.id)}>
+          <PiPause />
         </PlayButton>
       )}
     </div>

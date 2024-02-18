@@ -2,7 +2,7 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import { usePlayersActions, usePlayerState } from "@/stores/players";
+import { usePlayersActions, useIsCurrentlyPlaying } from "@/stores/players";
 import { Avatar } from "@/app/_components/ui/avatar";
 import { LocalDate } from "@/app/_components/local-date";
 import { LikeButton } from "@/app/_components/like-button";
@@ -22,28 +22,16 @@ type MusicPostProps = {
     createdAt: Date;
     user: React.ComponentProps<typeof Avatar>["user"];
     likes: Array<{
-      user: {
-        name: string;
-        id: string;
-        image: string;
-      };
+      user: React.ComponentProps<typeof Avatar>["user"];
       id: string;
     }>;
   };
 };
 
 export function MusicPost({ post }: MusicPostProps) {
-  const playerState = usePlayerState(post.id);
+  const isCurrentlyPlaying = useIsCurrentlyPlaying(post.id);
   const playersActions = usePlayersActions();
   const router = useRouter();
-
-  React.useEffect(() => {
-    playersActions.addPlayer(post.id);
-
-    return () => {
-      playersActions.removePlayer(post.id);
-    };
-  }, [playersActions, post.id]);
 
   return (
     <div
@@ -72,13 +60,13 @@ export function MusicPost({ post }: MusicPostProps) {
           url={post.url}
           controls
           width="100%"
-          playing={playerState.playing}
+          playing={isCurrentlyPlaying}
           style={{
             borderRadius: "0.5rem",
             overflow: "hidden",
           }}
           onPlay={() => {
-            playersActions.playPlayer(post.id);
+            playersActions.setCurrentlyPlaying(post.id);
           }}
           onEnded={() => {
             playersActions.pausePlayer(post.id);
