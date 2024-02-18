@@ -1,12 +1,11 @@
 import { create } from "zustand";
-import invariant from "tiny-invariant";
 
 type PlayerState = {
   playing: boolean;
 };
 
 type PlayersState = {
-  playersState: Record<string, PlayerState>;
+  playersState: Map<string, PlayerState>;
   currentlyPlaying: {
     id: string;
     playing: boolean;
@@ -19,58 +18,65 @@ type PlayersState = {
   };
 };
 
-const usePlayersStore = create<PlayersState>()((set) => ({
-  playersState: {},
+const usePlayersStore = create<PlayersState>()((set, get) => ({
+  playersState: new Map<string, PlayerState>(),
   currentlyPlaying: null,
   actions: {
-    addPlayer: (postId, playerState = { playing: false }) =>
+    addPlayer: (postId, playerState = { playing: false }) => {
       set((state) => ({
-        playersState: {
-          ...state.playersState,
-          [postId]: playerState,
-        },
-      })),
-    removePlayer: (postId) =>
-      set((state) => ({
-        playersState: Object.keys(state.playersState).reduce<
-          PlayersState["playersState"]
-        >((acc, key) => {
-          if (key !== postId) {
-            const playerState = state.playersState[key];
-            invariant(playerState, "Player state not found");
-            acc[key] = playerState;
-          }
-          return acc;
-        }, {}),
-      })),
+        playersState: structuredClone(state.playersState).set(
+          postId,
+          playerState,
+        ),
+      }));
+    },
+    removePlayer: (postId) => {
+      const newPlayerState = structuredClone(get().playersState);
+      newPlayerState.delete(postId);
+
+      set({
+        playersState: newPlayerState,
+      });
+    },
     pausePlayer(postId) {
-      set((state) => ({
-        playersState: {
-          ...state.playersState,
-          [postId]: {
-            playing: false,
-          },
-        },
+      const newPlayersState = structuredClone(get().playersState);
+
+      const post = newPlayersState.get(postId);
+
+      if (!post) return;
+
+      post.playing = false;
+
+      set({
+        playersState: newPlayersState,
         currentlyPlaying: {
           id: postId,
           playing: false,
         },
-      }));
+      });
     },
     playPlayer(postId) {
-      set((state) => ({
-        playersState: Object.keys(state.playersState).reduce<
-          PlayersState["playersState"]
-        >((acc, key) => {
-          acc[key] = { playing: key === postId };
+      const newPlayersState = structuredClone(get().playersState);
 
-          return acc;
-        }, {}),
+      newPlayersState.forEach((_, key, map) => {
+        if (key === postId) {
+          map.set(key, {
+            playing: true,
+          });
+        } else {
+          map.set(key, {
+            playing: false,
+          });
+        }
+      });
+
+      set({
+        playersState: newPlayersState,
         currentlyPlaying: {
           id: postId,
           playing: true,
         },
-      }));
+      });
     },
   },
 }));
@@ -78,7 +84,7 @@ const usePlayersStore = create<PlayersState>()((set) => ({
 export const usePlayersState = () =>
   usePlayersStore((state) => state.playersState);
 export const usePlayerState = (id: string) =>
-  usePlayersStore((state) => state.playersState[id] ?? { playing: false });
+  usePlayersStore((state) => state.playersState.get(id) ?? { playing: false });
 export const useCurrentlyPlaying = () =>
   usePlayersStore((state) => state.currentlyPlaying);
 export const usePlayersActions = () =>
